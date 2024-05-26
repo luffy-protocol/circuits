@@ -10,6 +10,9 @@ fn main(
     selected_players_points: [[u8; 32]; 11],
     player_points_merkle_paths: [[[u8; 32]; MERKLE_DEPTH]; 11],
     all_player_points_merkle_root: [u8; 32],
+    captain: pub u8,
+    viceCaptain: pub u8,
+    isRandom: pub bool,
     selected_player_ids: pub [u8; 11],
     selected_squad_hash: pub [u8; 32],
     claimed_player_points: pub u64
@@ -30,15 +33,13 @@ fn main(
         all_player_points_merkle_root
     );
 
-    let mut calculated_total_points: u64 = 0;
-
-    for point in selected_players_points {
-        for byte in point {
-            calculated_total_points += byte as u64;
-        }
-    }
-
-    assert(calculated_total_points == claimed_player_points);
+    calculate_points(
+        selected_players_points,
+        claimed_player_points,
+        captain,
+        viceCaptain,
+        isRandom
+    );
 }
 
 fn verify_squad_hash(player_ids: [u8; 11], squad_hash: [u8; 32]) {
@@ -55,8 +56,6 @@ fn ecdsa_verification(
     let computedAddress: Field = ecrecover::secp256k1::PubKey::from_xy(signer_pub_x_key, signer_pub_y_key).to_eth_address(); // Compute address from public key
     let recoveredAddress = ecrecover::ecrecover(signer_pub_x_key, signer_pub_y_key, signature, hash);
 
-    println(f"Computed address: {computedAddress}");
-    println(f"Recovered address: {recoveredAddress}");
     assert(computedAddress == recoveredAddress);
 }
 
@@ -89,8 +88,6 @@ fn compute_and_verify_merkle_root(
         leaf_index_mut = leaf_index_mut / 2;
     }
 
-    println(f"Computed merkle root: {computed_merkle_root}");
-    println(f"All points merkle root: {all_points_merkle_root}");
     assert(computed_merkle_root == all_points_merkle_root);
 }
 
@@ -101,4 +98,41 @@ fn concatenate_leafs(leaf1: [u8; 32], leaf2: [u8; 32]) -> [u8; 64] {
         arr[i + 32] = leaf2[i];
     }
     arr
+}
+
+fn calculate_points(
+    player_points: [[u8; 32]; 11],
+    claimed_player_points: u64,
+    captain: u8,
+    viceCaptain: u8,
+    isRandom: bool
+) {
+    let mut calculated_total_points: u64 = 0;
+    let mut counter: u8 = 0;
+    let mut captainMultiplier: u64 = 0;
+    let mut viceCaptainMultiplier: u64 = 0;
+
+    if isRandom {
+        captainMultiplier = 4;
+        viceCaptainMultiplier = 3;
+    } else {
+        captainMultiplier = 3;
+        viceCaptainMultiplier = 2;
+    }
+
+    for point in player_points {
+        let mut player_point: u64 = 0;
+        for byte in point {
+            player_point += byte as u64;
+        }
+        if counter == captain {
+            player_point = player_point * captainMultiplier;
+        } else if counter == viceCaptain {
+            player_point = player_point * viceCaptainMultiplier;
+        }
+        calculated_total_points += player_point;
+        counter += 1;
+    }
+
+    assert(calculated_total_points == claimed_player_points);
 }
