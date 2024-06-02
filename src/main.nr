@@ -2,7 +2,7 @@ mod tests;
 use dep::std;
 use dep::ecrecover;
 
-global MERKLE_DEPTH = 6;
+global MERKLE_DEPTH = 7;
 fn main(
     signer_pub_x_key: [u8; 32],
     signer_pub_y_key: [u8; 32],
