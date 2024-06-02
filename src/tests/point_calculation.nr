@@ -30,15 +30,15 @@ fn test_works_1() {
 
     let claimed_player_points= 365;
     let captain = 0;
-    let viceCaptain = 3;
-    let isRandom = true;
+    let vice_captain = 3;
+    let is_random = true;
 
     calculate_points(
         player_points,
         claimed_player_points,
         captain,
-        viceCaptain,
-        isRandom
+        vice_captain,
+        is_random
     );
 }
 
@@ -72,15 +72,15 @@ fn test_works_2() {
 
     let claimed_player_points= 335;
     let captain = 4;
-    let viceCaptain = 3;
-    let isRandom = true;
+    let vice_captain = 3;
+    let is_random = true;
 
     calculate_points(
         player_points,
         claimed_player_points,
         captain,
-        viceCaptain,
-        isRandom
+        vice_captain,
+        is_random
     );
 }
 
@@ -114,14 +114,14 @@ fn test_fails() {
 
     let claimed_player_points= 365;
     let captain = 0;
-    let viceCaptain = 2;
-    let isRandom = true;
+    let vice_captain = 2;
+    let is_random = true;
 
     calculate_points(
         player_points,
         claimed_player_points,
         captain,
-        viceCaptain,
-        isRandom
+        vice_captain,
+        is_random
     );
 }

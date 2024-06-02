@@ -11,8 +11,8 @@ fn main(
     player_points_merkle_paths: [[[u8; 32]; MERKLE_DEPTH]; 11],
     all_player_points_merkle_root: [u8; 32],
     captain: pub u8,
-    viceCaptain: pub u8,
-    isRandom: pub bool,
+    vice_captain: pub u8,
+    is_random: pub bool,
     selected_player_ids: pub [u8; 11],
     selected_squad_hash: pub [u8; 32],
     claimed_player_points: pub u64
@@ -37,8 +37,8 @@ fn main(
         selected_players_points,
         claimed_player_points,
         captain,
-        viceCaptain,
-        isRandom
+        vice_captain,
+        is_random
     );
 }
 
@@ -104,20 +104,20 @@ fn calculate_points(
     player_points: [[u8; 32]; 11],
     claimed_player_points: u64,
     captain: u8,
-    viceCaptain: u8,
-    isRandom: bool
+    vice_captain: u8,
+    is_random: bool
 ) {
     let mut calculated_total_points: u64 = 0;
     let mut counter: u8 = 0;
     let mut captainMultiplier: u64 = 0;
-    let mut viceCaptainMultiplier: u64 = 0;
+    let mut vice_captainMultiplier: u64 = 0;
 
-    if isRandom {
+    if is_random {
         captainMultiplier = 4;
-        viceCaptainMultiplier = 3;
+        vice_captainMultiplier = 3;
     } else {
         captainMultiplier = 3;
-        viceCaptainMultiplier = 2;
+        vice_captainMultiplier = 2;
     }
 
     for point in player_points {
@@ -127,8 +127,8 @@ fn calculate_points(
         }
         if counter == captain {
             player_point = player_point * captainMultiplier;
-        } else if counter == viceCaptain {
-            player_point = player_point * viceCaptainMultiplier;
+        } else if counter == vice_captain {
+            player_point = player_point * vice_captainMultiplier;
         }
         calculated_total_points += player_point;
         counter += 1;
